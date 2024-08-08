@@ -1,8 +1,6 @@
 <?php
 
-
 namespace TheCodingMachine\GraphQLite\Bundle\Controller;
-
 
 use Laminas\Diactoros\ResponseFactory;
 use Laminas\Diactoros\ServerRequestFactory;
@@ -33,24 +31,18 @@ use TheCodingMachine\GraphQLite\Bundle\Context\SymfonyGraphQLContext;
  */
 class GraphQLiteController
 {
-    /**
-     * @var HttpMessageFactoryInterface
-     */
-    private $httpMessageFactory;
-    /** @var int */
-    private $debug;
-    /**
-     * @var ServerConfig
-     */
-    private $serverConfig;
-    /**
-     * @var HttpCodeDeciderInterface
-     */
-    private $httpCodeDecider;
+    private HttpMessageFactoryInterface|PsrHttpFactory $httpMessageFactory;
 
-    public function __construct(ServerConfig $serverConfig, HttpMessageFactoryInterface $httpMessageFactory = null, ?int $debug = null, ?HttpCodeDeciderInterface $httpCodeDecider = null)
-    {
-        $this->serverConfig = $serverConfig;
+    private int $debug;
+    
+    private HttpCodeDeciderInterface|HttpCodeDecider $httpCodeDecider;
+
+    public function __construct(
+        private readonly ServerConfig $serverConfig,
+        HttpMessageFactoryInterface $httpMessageFactory = null,
+        ?int $debug = null,
+        ?HttpCodeDeciderInterface $httpCodeDecider = null
+    ) {
         $this->httpMessageFactory = $httpMessageFactory ?: new PsrHttpFactory(new ServerRequestFactory(), new StreamFactory(), new UploadedFileFactory(), new ResponseFactory());
         $this->debug = $debug ?? $serverConfig->getDebugFlag();
         $this->httpCodeDecider = $httpCodeDecider ?? new HttpCodeDecider();
@@ -78,14 +70,14 @@ class GraphQLiteController
     {
         $psr7Request = $this->httpMessageFactory->createRequest($request);
 
-        if (strtoupper($request->getMethod()) === "POST" && empty($psr7Request->getParsedBody())) {
+        if (strtoupper($request->getMethod()) === Request::METHOD_POST && empty($psr7Request->getParsedBody())) {
             $content = $psr7Request->getBody()->getContents();
             $parsedBody = json_decode($content, true);
             if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new \RuntimeException('Invalid JSON received in POST body: '.json_last_error_msg());
+                throw new RuntimeException('Invalid JSON received in POST body: '.json_last_error_msg());
             }
             if (!is_array($parsedBody)){
-                throw new \RuntimeException('Expecting associative array from request, got ' . gettype($parsedBody));
+                throw new RuntimeException('Expecting associative array from request, got ' . gettype($parsedBody));
             }
             $psr7Request = $psr7Request->withParsedBody($parsedBody);
         }
@@ -111,6 +103,7 @@ class GraphQLiteController
         if ($result instanceof ExecutionResult) {
             return new JsonResponse($result->toArray($this->debug), $this->httpCodeDecider->decideHttpStatusCode($result));
         }
+        
         if (is_array($result)) {
             $finalResult = array_map(function (ExecutionResult $executionResult): array {
                 return $executionResult->toArray($this->debug);

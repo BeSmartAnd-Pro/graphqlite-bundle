@@ -1,6 +1,5 @@
 <?php
 
-
 namespace TheCodingMachine\GraphQLite\Bundle\Server;
 
 use GraphQL\Language\AST\DocumentNode;
@@ -25,7 +24,7 @@ class ServerConfig extends \GraphQL\Server\ServerConfig
     public function setValidationRules($validationRules): \GraphQL\Server\ServerConfig
     {
         parent::setValidationRules(
-            function (OperationParams $params, DocumentNode $doc, string $operationType) use ($validationRules): array {
+            static function (OperationParams $params, DocumentNode $doc, string $operationType) use ($validationRules): array {
                 $validationRules = is_callable($validationRules)
                     ? $validationRules($params, $doc, $operationType)
                     : $validationRules;
@@ -36,5 +35,4 @@ class ServerConfig extends \GraphQL\Server\ServerConfig
 
         return $this;
     }
-
 }

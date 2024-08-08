@@ -86,8 +86,7 @@ class FunctionalTest extends TestCase
         }']);
 
         $response = $kernel->handle($request);
-
-        $result = json_decode($response->getContent(), true);
+        $result   = json_decode($response->getContent(), true);
 
         $this->assertSame([
             'data' => [
@@ -380,38 +379,6 @@ class FunctionalTest extends TestCase
         $kernel->boot();
     }
 
-    /*public function testAutoMeNoSecurity(): void
-    {
-        $kernel = new GraphqliteTestingKernel(true, null, false);
-        $kernel->boot();
-
-        $session = new Session(new MockArraySessionStorage());
-        $container = $kernel->getContainer();
-        $container->set('session', $session);
-
-        $request = Request::create('/graphql', 'POST', ['query' => '
-        {
-          me {
-            userName
-            roles
-          }
-        }
-        ']);
-
-        $response = $kernel->handle($request);
-
-        $result = json_decode($response->getContent(), true);
-
-        $this->assertSame([
-            'data' => [
-                'me' => [
-                    'userName' => 'anon.',
-                    'roles' => [],
-                ]
-            ]
-        ], $result);
-    }*/
-
     public function testAllOff(): void
     {
         $kernel = new GraphQLiteTestingKernel(true, 'off', true, 'off');
@@ -578,7 +545,7 @@ class FunctionalTest extends TestCase
         $this->assertSame('Max query depth should be 1 but got 3.', $errors[0]['message']);
     }
 
-    private function logIn(ContainerInterface $container)
+    private function logIn(ContainerInterface $container): void
     {
         // put a token into the storage so the final calls can function
         $user = new InMemoryUser('foo', 'pass');
@@ -586,10 +553,7 @@ class FunctionalTest extends TestCase
         $container->get('security.untracked_token_storage')->setToken($token);
     }
 
-    /**
-     * @requires PHP 8.0
-     */
-    public function testPhp8Attributes(): void
+    public function testAttributes(): void
     {
         $kernel = new GraphQLiteTestingKernel();
         $kernel->boot();

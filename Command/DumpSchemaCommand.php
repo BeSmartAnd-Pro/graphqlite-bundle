@@ -58,7 +58,6 @@ class DumpSchemaCommand extends Command
 }
 
 class SchemaPrinterForGraphQLite extends SchemaPrinter {
-
     protected static function hasDefaultRootOperationTypes(TypeSchema $schema): bool
     {
         return $schema->getQueryType() === $schema->getType('Query')

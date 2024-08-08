@@ -1,8 +1,6 @@
 <?php
 
-
 namespace TheCodingMachine\GraphQLite\Bundle\Mappers;
-
 
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\Type;
@@ -19,6 +17,7 @@ class RequestParameterMiddleware implements ParameterMiddlewareInterface
     public function mapParameter(ReflectionParameter $parameter, DocBlock $docBlock, ?Type $paramTagType, ParameterAnnotations $parameterAnnotations, ParameterHandlerInterface $next): ParameterInterface
     {
         $parameterType = $parameter->getType();
+        
         if ($parameterType instanceof ReflectionNamedType && $parameterType->getName() === Request::class) {
             return new RequestParameter();
         }

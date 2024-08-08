@@ -1,8 +1,6 @@
 <?php
 
-
 namespace TheCodingMachine\GraphQLite\Bundle\Tests\Fixtures\Controller;
-
 
 use Porpaginas\Arrays\ArrayResult;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,64 +18,51 @@ use TheCodingMachine\GraphQLite\Validator\Annotations\Assertion;
 
 class TestGraphqlController
 {
-
-    /**
-     * @Query()
-     */
+    #[Query]
     public function test(string $foo): string
     {
         return 'echo ' .$foo;
     }
 
     /**
-     * @Query()
      * @return Product[]
      */
+    #[Query]
     public function products(): array
     {
         return [
             new Product('Mouf', 9999)
         ];
     }
-
-    /**
-     * @Query()
-     */
+    
+    #[Query]
     public function contact(): Contact
     {
         return new Contact('Mouf');
     }
 
-    /**
-     * @Mutation()
-     */
+    #[Mutation]
     public function saveProduct(Product $product): Product
     {
         return $product;
     }
 
     /**
-     * @Query()
-     * @return Contact[]
+     * @return ArrayResult<Contact>
      */
+    #[Query]
     public function contacts(): ArrayResult
     {
         return new ArrayResult([new Contact('Mouf')]);
     }
 
-    /**
-     * @Query()
-     * @return string
-     */
+    #[Query]
     public function triggerException(int $code = 0): string
     {
         throw new MyException('Boom', $code);
     }
 
-    /**
-     * @Query()
-     * @return string
-     */
+    #[Query]
     public function triggerAggregateException(): string
     {
         $exception1 = new GraphQLException('foo', 401);
@@ -85,52 +70,38 @@ class TestGraphqlController
         throw new GraphQLAggregateException([$exception1, $exception2]);
     }
 
-    /**
-     * @Query()
-     * @Logged()
-     * @FailWith(null)
-     * @return string
-     */
+    #[Query]
+    #[Logged]
+    #[FailWith(null)]
     public function loggedQuery(): string
     {
         return 'foo';
     }
 
-    /**
-     * @Query()
-     * @Right("ROLE_ADMIN")
-     * @FailWith(null)
-     * @return string
-     */
+    #[Query]
+    #[Right("ROLE_ADMIN")]
+    #[FailWith(null)]
     public function withAdminRight(): string
     {
         return 'foo';
     }
 
-    /**
-     * @Query()
-     * @Right("ROLE_USER")
-     * @FailWith(null)
-     * @return string
-     */
+    #[Query]
+    #[Right("ROLE_USER")]
+    #[FailWith(null)]
     public function withUserRight(): string
     {
         return 'foo';
     }
-
-    /**
-     * @Query()
-     * @return string
-     */
+    
+    #[Query]
     public function getUri(Request $request): string
     {
         return $request->getPathInfo();
     }
 
-    /**
-     * @Query
-     * @Assertion(for="email", constraint=@Assert\Email())
-     */
+    #[Query]
+    #[Assertion(for: "email", constraint: new Assert\Email())]
     public function findByMail(string $email = 'a@a.com'): string
     {
         return $email;

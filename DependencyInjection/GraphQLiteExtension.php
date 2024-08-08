@@ -1,9 +1,8 @@
 <?php
 
-
 namespace TheCodingMachine\GraphQLite\Bundle\DependencyInjection;
 
-
+use Exception;
 use GraphQL\Error\DebugFlag;
 use TheCodingMachine\GraphQLite\Mappers\Root\RootTypeMapperFactoryInterface;
 use function array_map;
@@ -17,7 +16,6 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
 class GraphQLiteExtension extends Extension
 {
-
     public function getAlias(): string
     {
         return 'graphqlite';
@@ -27,7 +25,7 @@ class GraphQLiteExtension extends Extension
      * Loads a specific configuration.
      *
      * @param mixed[] $configs
-     * @throws \Exception
+     * @throws Exception
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
@@ -38,26 +36,31 @@ class GraphQLiteExtension extends Extension
 
         if (isset($config['namespace']['controllers'])) {
             $controllers = $config['namespace']['controllers'];
+            
             if (!is_array($controllers)) {
                 $controllers = [ $controllers ];
             }
+            
             $namespaceController = array_map(
-                function($namespace): string {
-                    return rtrim($namespace, '\\') . '\\';
+                static function(string $namespace): string {
+                    return rtrim($namespace, '\\');
                 },
                 $controllers
             );
         } else {
             $namespaceController = [];
         }
+        
         if (isset($config['namespace']['types'])) {
             $types = $config['namespace']['types'];
+            
             if (!is_array($types)) {
                 $types = [ $types ];
             }
+            
             $namespaceType = array_map(
-                function($namespace): string {
-                    return rtrim($namespace, '\\') . '\\';
+                static function(string $namespace): string {
+                    return rtrim($namespace, '\\');
                 },
                 $types
             );
@@ -80,11 +83,13 @@ class GraphQLiteExtension extends Extension
         $loader->load('graphqlite.xml');
 
         $definition = $container->getDefinition(ServerConfig::class);
+        
         if (isset($config['debug'])) {
             $debugCode = $this->toDebugCode($config['debug']);
         } else {
             $debugCode = DebugFlag::RETHROW_UNSAFE_EXCEPTIONS;
         }
+        
         $definition->addMethodCall('setDebugFlag', [$debugCode]);
 
         $container->registerForAutoconfiguration(ObjectType::class)
@@ -95,15 +100,15 @@ class GraphQLiteExtension extends Extension
 
     /**
      * @param array<string, int> $debug
-     * @return int
      */
     private function toDebugCode(array $debug): int
     {
         $code = 0;
-        $code |= ($debug['INCLUDE_DEBUG_MESSAGE'] ?? 0)*DebugFlag::INCLUDE_DEBUG_MESSAGE;
-        $code |= ($debug['INCLUDE_TRACE'] ?? 0)*DebugFlag::INCLUDE_TRACE;
-        $code |= ($debug['RETHROW_INTERNAL_EXCEPTIONS'] ?? 0)*DebugFlag::RETHROW_INTERNAL_EXCEPTIONS;
-        $code |= ($debug['RETHROW_UNSAFE_EXCEPTIONS'] ?? 0)*DebugFlag::RETHROW_UNSAFE_EXCEPTIONS;
+        $code |= ($debug['INCLUDE_DEBUG_MESSAGE'] ?? 0) * DebugFlag::INCLUDE_DEBUG_MESSAGE;
+        $code |= ($debug['INCLUDE_TRACE'] ?? 0) * DebugFlag::INCLUDE_TRACE;
+        $code |= ($debug['RETHROW_INTERNAL_EXCEPTIONS'] ?? 0) * DebugFlag::RETHROW_INTERNAL_EXCEPTIONS;
+        $code |= ($debug['RETHROW_UNSAFE_EXCEPTIONS'] ?? 0) * DebugFlag::RETHROW_UNSAFE_EXCEPTIONS;
+        
         return $code;
     }
 }

@@ -7,6 +7,8 @@
 
 # GraphQLite bundle
 
-Symfony 5 bundle for the thecodingmachine/graphqlite package.
+Symfony bundle for the thecodingmachine/graphqlite package.
+
+forked by BeSmartAnd.Pro
 
 See [thecodingmachine/graphqlite](https://github.com/thecodingmachine/graphqlite)

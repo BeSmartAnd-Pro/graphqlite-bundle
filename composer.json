@@ -1,67 +1,75 @@
 {
-  "name" : "thecodingmachine/graphqlite-bundle",
-  "description" : "A Symfony bundle for thecodingmachine/graphqlite.",
-  "keywords" : [
+  "name": "besmartand-pro/graphqlite-bundle",
+  "description": "A Symfony bundle for thecodingmachine/graphqlite.",
+  "license": "MIT",
+  "type": "symfony-bundle",
+  "keywords": [
     "graphql",
     "bundle",
     "symfony"
   ],
-  "homepage" : "https://github.com/thecodingmachine/graphqlite",
-  "type" : "symfony-bundle",
-  "license" : "MIT",
-  "authors" : [{
-    "name" : "David Négrier",
-    "email" : "d.negrier@thecodingmachine.com",
-    "homepage" : "http://mouf-php.com"
-  }
+  "authors": [
+    {
+      "name": "David Négrier",
+      "email": "d.negrier@thecodingmachine.com",
+      "homepage": "http://mouf-php.com"
+    },
+    {
+      "name": "BeSmartAnd.Pro",
+      "email": "hello@BeSmartAnd.Pro",
+      "homepage": "https://BeSmartAnd.Pro"
+    }
   ],
-  "require" : {
-    "php" : ">=8.1",
+  "homepage": "https://github.com/BeSmartAnd-Pro/graphqlite",
+  "require": {
+    "php": ">=8.1",
     "ext-json": "*",
-    "thecodingmachine/graphqlite" : "^6.0",
-    "thecodingmachine/graphqlite-symfony-validator-bridge" : "^6.0",
-    "symfony/framework-bundle": "^6",
-    "symfony/validator": "^6",
-    "symfony/translation": "^6",
-    "doctrine/annotations": "^1.13 || ^2.0.1",
-    "symfony/psr-http-message-bridge": "^2.0",
-    "nyholm/psr7": "^1.1",
+    "doctrine/annotations": "^2.0",
     "laminas/laminas-diactoros": "^2.2.2",
-    "overblog/graphiql-bundle": "^0.2 || ^0.3",
+    "nyholm/psr7": "^1.1",
+    "symfony/console": "^6 || ^7",
+    "symfony/framework-bundle": "^6 || ^7",
+    "symfony/psr-http-message-bridge": "^6 || ^7",
+    "symfony/translation": "^6 || ^7",
+    "symfony/validator": "^6 || ^7",
     "thecodingmachine/cache-utils": "^1",
-    "symfony/console": "^6"
+    "thecodingmachine/graphqlite": "^7.0",
+    "thecodingmachine/graphqlite-symfony-validator-bridge": "^7.0"
   },
   "require-dev": {
-    "symfony/security-bundle": "^6",
-    "symfony/yaml": "^6",
     "beberlei/porpaginas": "^1.2 || ^2.0",
+    "composer/package-versions-deprecated": "^1.8",
+    "ergebnis/composer-normalize": "^2.43",
     "php-coveralls/php-coveralls": "^2.1.0",
-    "symfony/phpunit-bridge": "^6 || ^7",
     "phpstan/phpstan": "^1.8",
-    "composer/package-versions-deprecated": "^1.8"
+    "phpunit/phpunit": "^8.5.19 || ^9.5.8",
+    "roave/security-advisories": "dev-latest",
+    "symfony/phpunit-bridge": "^6 || ^7",
+    "symfony/security-bundle": "^6 || ^7",
+    "symfony/yaml": "^6|^7"
   },
   "conflict": {
     "mouf/classname-mapper": "<1.0.2",
+    "phpdocumentor/type-resolver": "<1.4",
     "symfony/event-dispatcher": "<4.3",
-    "symfony/security-core": "<4.3",
     "symfony/routing": "<4.3",
-    "phpdocumentor/type-resolver": "<1.4"
-  },
-  "scripts": {
-    "phpstan": "phpstan analyse GraphQLiteBundle.php DependencyInjection/ Controller/ Resources/ Security/ -c phpstan.neon --level=7 --no-progress"
+    "symfony/security-core": "<4.3"
   },
   "suggest": {
     "symfony/security-bundle": "To use @Logged or @Right annotations"
   },
-  "autoload" : {
-    "psr-4" : {
-      "TheCodingMachine\\GraphQLite\\Bundle\\" : ""
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "TheCodingMachine\\GraphQLite\\Bundle\\": ""
     }
   },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "6.0.x-dev"
+  "config": {
+    "allow-plugins": {
+      "ergebnis/composer-normalize": true
     }
   },
-  "prefer-stable": true
+  "scripts": {
+    "phpstan": "phpstan analyse GraphQLiteBundle.php DependencyInjection/ Controller/ Resources/ Security/ -c phpstan.neon --level=7 --no-progress"
+  }
 }

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace TheCodingMachine\GraphQLite\Bundle\Tests;
-
 
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
@@ -20,43 +18,31 @@ class GraphQLiteTestingKernel extends Kernel implements CompilerPassInterface
 {
     use MicroKernelTrait;
 
-    const CONFIG_EXTS = '.{php,xml,yaml,yml}';
+    public const CONFIG_EXTS = '.{php,xml,yaml,yml}';
+
+    private bool $enableSession;
+
+    private ?string $enableLogin;
+
+    private bool $enableSecurity;
+
+    private ?string $enableMe;
+
+    private bool $introspection;
+
+    private ?int $maximumQueryComplexity;
+
+    private ?int $maximumQueryDepth;
+    
     /**
-     * @var bool
+     * @var string[]
      */
-    private $enableSession;
+    private array $controllersNamespace;
+    
     /**
-     * @var string
+     * @var string[]
      */
-    private $enableLogin;
-    /**
-     * @var bool
-     */
-    private $enableSecurity;
-    /**
-     * @var string|null
-     */
-    private $enableMe;
-    /**
-     * @var bool
-     */
-    private $introspection;
-    /**
-     * @var int|null
-     */
-    private $maximumQueryComplexity;
-    /**
-     * @var int|null
-     */
-    private $maximumQueryDepth;
-    /**
-     * @var array|string[]
-     */
-    private $controllersNamespace;
-    /**
-     * @var array|string[]
-     */
-    private $typesNamespace;
+    private array $typesNamespace;
 
     /**
      * @param string[] $controllersNamespace
@@ -73,6 +59,7 @@ class GraphQLiteTestingKernel extends Kernel implements CompilerPassInterface
                                 array $typesNamespace = ['TheCodingMachine\\GraphQLite\\Bundle\\Tests\\Fixtures\\Types\\', 'TheCodingMachine\\GraphQLite\\Bundle\\Tests\\Fixtures\\Entities\\'])
     {
         parent::__construct('test', true);
+        
         $this->enableSession = $enableSession;
         $this->enableLogin = $enableLogin;
         $this->enableSecurity = $enableSecurity;
@@ -87,14 +74,17 @@ class GraphQLiteTestingKernel extends Kernel implements CompilerPassInterface
     public function registerBundles(): iterable
     {
         $bundles = [ new FrameworkBundle() ];
+        
         if (class_exists(SecurityBundle::class)) {
             $bundles[] = new SecurityBundle();
         }
+        
         $bundles[] = new GraphQLiteBundle();
+        
         return $bundles;
     }
 
-    public function configureContainer(ContainerBuilder $c, LoaderInterface $loader)
+    public function configureContainer(ContainerBuilder $c, LoaderInterface $loader): void
     {
         $loader->load(function(ContainerBuilder $container) {
             $frameworkConf = array(
@@ -191,7 +181,7 @@ class GraphQLiteTestingKernel extends Kernel implements CompilerPassInterface
     }
 
     // Note: typing is disabled because using different classes in Symfony 4 and 5
-    protected function configureRoutes(/*RoutingConfigurator*/ $routes)
+    protected function configureRoutes(/*RoutingConfigurator*/ $routes): void
     {
         $routes->import(__DIR__.'/../Resources/config/routes.xml');
     }

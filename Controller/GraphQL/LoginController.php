@@ -1,6 +1,6 @@
 <?php
-namespace TheCodingMachine\GraphQLite\Bundle\Controller\GraphQL;
 
+namespace TheCodingMachine\GraphQLite\Bundle\Controller\GraphQL;
 
 use RuntimeException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -20,45 +20,20 @@ use TheCodingMachine\GraphQLite\Annotations\Mutation;
  */
 class LoginController
 {
-
-    /**
-     * @var UserProviderInterface<TUser>
-     */
-    private $userProvider;
-    /**
-     * @var UserPasswordHasherInterface
-     */
-    private $passwordEncoder;
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
-    /**
-     * @var string
-     */
-    private $firewallName;
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-
-    /**
-     * @param UserProviderInterface<TUser> $userProvider
-     */
-    public function __construct(UserProviderInterface $userProvider, UserPasswordHasherInterface $passwordEncoder, TokenStorageInterface $tokenStorage, EventDispatcherInterface $eventDispatcher, string $firewallName)
-    {
-        $this->userProvider = $userProvider;
-        $this->passwordEncoder = $passwordEncoder;
-        $this->tokenStorage = $tokenStorage;
-        $this->firewallName = $firewallName;
-        $this->eventDispatcher = $eventDispatcher;
+    public function __construct(
+        /** @var UserProviderInterface<TUser> */
+        private readonly UserProviderInterface $userProvider,
+        private readonly UserPasswordHasherInterface $passwordEncoder,
+        private readonly TokenStorageInterface $tokenStorage,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly string $firewallName
+    ) {
     }
 
     /**
-     * @Mutation()
-     *
      * @phpstan-return TUser
      */
+    #[Mutation]
     public function login(string $userName, string $password, Request $request): UserInterface
     {
         try {
@@ -94,15 +69,13 @@ class LoginController
 
         return $user;
     }
-
-    /**
-     * @Mutation()
-     */
+    
+    #[Mutation]
     public function logout(Request $request): bool
     {
         $this->tokenStorage->setToken(null);
 
-        $request->getSession()->remove('_security_'.$this->firewallName);
+        $request->getSession()->remove('_security_' . $this->firewallName);
 
         return true;
     }
