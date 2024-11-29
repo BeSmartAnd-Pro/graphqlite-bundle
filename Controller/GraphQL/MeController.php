@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TheCodingMachine\GraphQLite\Bundle\Controller\GraphQL;
 
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;

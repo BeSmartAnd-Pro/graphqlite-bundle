@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TheCodingMachine\GraphQLite\Bundle\Security;
 
 use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use TheCodingMachine\GraphQLite\Security\AuthenticationServiceInterface;
-use function is_object;
 
 class AuthenticationService implements AuthenticationServiceInterface
 {

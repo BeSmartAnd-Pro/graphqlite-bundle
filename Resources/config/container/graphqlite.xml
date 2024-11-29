@@ -12,23 +12,6 @@
     <services>
         <defaults autowire="true" autoconfigure="true" public="false" />
 
-        <service id="TheCodingMachine\GraphQLite\SchemaFactory">
-            <argument type="service" id="graphqlite.psr16cache" />
-            <argument type="service" id="service_container" />
-            <call method="setAuthenticationService">
-                <argument type="service" id="TheCodingMachine\GraphQLite\Security\AuthenticationServiceInterface" />
-            </call>
-            <call method="setAuthorizationService">
-                <argument type="service" id="TheCodingMachine\GraphQLite\Security\AuthorizationServiceInterface" />
-            </call>
-        </service>
-
-        <service id="TheCodingMachine\GraphQLite\Schema" public="true">
-            <factory service="TheCodingMachine\GraphQLite\SchemaFactory"
-                     method="createSchema"
-            />
-        </service>
-
         <service id="TheCodingMachine\GraphQLite\AggregateControllerQueryProviderFactory">
             <argument type="collection">
             </argument>
@@ -37,10 +20,10 @@
             <tag name="graphql.queryprovider_factory" />
         </service>
 
-        <service id="GraphQL\Type\Schema" alias="TheCodingMachine\GraphQLite\Schema" />
+        <service id="TheCodingMachine\GraphQLite\Bundle\Manager\SchemaManager"/>
+        <service id="TheCodingMachine\GraphQLite\Bundle\Manager\ServerConfigManager"/>
 
-
-        <service id="TheCodingMachine\GraphQLite\AnnotationReader" >
+        <service id="TheCodingMachine\GraphQLite\AnnotationReader">
             <argument key="$mode">%graphqlite.annotations.error_mode%</argument>
         </service>
 
@@ -55,25 +38,7 @@
         </service>
 
         <service id="TheCodingMachine\GraphQLite\Security\AuthorizationServiceInterface" alias="TheCodingMachine\GraphQLite\Bundle\Security\AuthorizationService" />
-
-        <service id="GraphQL\Server\ServerConfig" class="TheCodingMachine\GraphQLite\Bundle\Server\ServerConfig">
-            <call method="setSchema">
-                <argument type="service" id="TheCodingMachine\GraphQLite\Schema"/>
-            </call>
-            <call method="setErrorFormatter">
-                <argument type="collection">
-                    <argument>\TheCodingMachine\GraphQLite\Exceptions\WebonyxErrorHandler</argument>
-                    <argument>errorFormatter</argument>
-                </argument>
-            </call>
-            <call method="setErrorsHandler">
-                <argument type="collection">
-                    <argument>\TheCodingMachine\GraphQLite\Exceptions\WebonyxErrorHandler</argument>
-                    <argument>errorHandler</argument>
-                </argument>
-            </call>
-        </service>
-
+        
         <service id="GraphQL\Validator\Rules\DisableIntrospection">
             <argument key="$enabled">%graphqlite.security.disableIntrospection%</argument>
         </service>

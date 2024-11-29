@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TheCodingMachine\GraphQLite\Bundle\Tests\Fixtures\Entities;
 
 use stdClass;
@@ -28,7 +30,7 @@ class Contact
     #[Autowire(['for' => '$testService', 'identifier' => 'someService'])]
     #[Autowire(['for' => '$someService', 'identifier' => 'someService'])]
     #[Autowire(['for' => '$someAlias', 'identifier' => 'someAlias'])]
-    public function injectService(TestGraphqlController $testService = null, stdClass $someService = null, stdClass $someAlias = null): string
+    public function injectService(?TestGraphqlController $testService = null, ?stdClass $someService = null, ?stdClass $someAlias = null): string
     {
         if (!$testService instanceof TestGraphqlController || $someService === null || $someAlias === null) {
             return 'KO';
@@ -43,7 +45,7 @@ class Contact
     }
 
     #[Autowire(['for' => '$someOtherService', 'identifier' => 'someOtherService'])]
-    public function prefetchData(iterable $iterable, stdClass $someOtherService = null): string
+    public function prefetchData(iterable $iterable, ?stdClass $someOtherService = null): string
     {
         if ($someOtherService === null) {
             return 'KO';

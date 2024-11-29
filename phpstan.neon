@@ -6,7 +6,6 @@ parameters:
         - .
     excludePaths:
         - vendor
-        - cache
         - .phpstan-cache
         - Tests
     level: max

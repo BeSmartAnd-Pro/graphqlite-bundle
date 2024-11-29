@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TheCodingMachine\GraphQLite\Bundle\Tests\Fixtures\Controller;
 
 use Porpaginas\Arrays\ArrayResult;
@@ -67,6 +69,7 @@ class TestGraphqlController
     {
         $exception1 = new GraphQLException('foo', 401);
         $exception2 = new GraphQLException('bar', 404, null, 'MyCat', ['field' => 'baz', 'category' => 'MyCat']);
+        
         throw new GraphQLAggregateException([$exception1, $exception2]);
     }
 

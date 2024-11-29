@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TheCodingMachine\GraphQLite\Bundle\DependencyInjection;
 
 use Exception;
 use GraphQL\Error\DebugFlag;
+use TheCodingMachine\GraphQLite\Bundle\Manager\ServerConfigManager;
 use TheCodingMachine\GraphQLite\Mappers\Root\RootTypeMapperFactoryInterface;
-use function array_map;
 use GraphQL\Server\ServerConfig;
 use GraphQL\Type\Definition\ObjectType;
-use function rtrim;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -34,45 +35,31 @@ class GraphQLiteExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/container'));
 
-        if (isset($config['namespace']['controllers'])) {
-            $controllers = $config['namespace']['controllers'];
-            
-            if (!is_array($controllers)) {
-                $controllers = [ $controllers ];
+        $controllers = [];
+        $types;
+
+        if (isset($config['namespaces'])) {
+            foreach ($config['namespaces'] as $name => $namespace) {
+                //$name to nazwa namespace, jakos to ogarnac
+                if (!isset($controllers[$name])) {
+                    $controllers[$name] = [];
+                }
+
+                foreach ($namespace['controllers'] as $controller) {
+                    $controllers[$name][] = rtrim($controller, '\\'); //$controller;
+                }
+
+                foreach ($namespace['types'] as $type) {
+                    $types[$name][] = rtrim($type, '\\');
+                }
             }
-            
-            $namespaceController = array_map(
-                static function(string $namespace): string {
-                    return rtrim($namespace, '\\');
-                },
-                $controllers
-            );
-        } else {
-            $namespaceController = [];
-        }
-        
-        if (isset($config['namespace']['types'])) {
-            $types = $config['namespace']['types'];
-            
-            if (!is_array($types)) {
-                $types = [ $types ];
-            }
-            
-            $namespaceType = array_map(
-                static function(string $namespace): string {
-                    return rtrim($namespace, '\\');
-                },
-                $types
-            );
-        } else {
-            $namespaceType = [];
         }
 
         $enableLogin = $config['security']['enable_login'] ?? 'auto';
         $enableMe = $config['security']['enable_me'] ?? 'auto';
 
-        $container->setParameter('graphqlite.namespace.controllers', $namespaceController);
-        $container->setParameter('graphqlite.namespace.types', $namespaceType);
+        $container->setParameter('graphqlite.namespaces.controllers', $controllers);
+        $container->setParameter('graphqlite.namespaces.types', $types);
         $container->setParameter('graphqlite.security.enable_login', $enableLogin);
         $container->setParameter('graphqlite.security.enable_me', $enableMe);
         $container->setParameter('graphqlite.security.disableIntrospection', !($config['security']['introspection'] ?? true));
@@ -82,14 +69,14 @@ class GraphQLiteExtension extends Extension
 
         $loader->load('graphqlite.xml');
 
-        $definition = $container->getDefinition(ServerConfig::class);
-        
+        $definition = $container->getDefinition(ServerConfigManager::class);
+
         if (isset($config['debug'])) {
             $debugCode = $this->toDebugCode($config['debug']);
         } else {
             $debugCode = DebugFlag::RETHROW_UNSAFE_EXCEPTIONS;
         }
-        
+
         $definition->addMethodCall('setDebugFlag', [$debugCode]);
 
         $container->registerForAutoconfiguration(ObjectType::class)
@@ -108,7 +95,7 @@ class GraphQLiteExtension extends Extension
         $code |= ($debug['INCLUDE_TRACE'] ?? 0) * DebugFlag::INCLUDE_TRACE;
         $code |= ($debug['RETHROW_INTERNAL_EXCEPTIONS'] ?? 0) * DebugFlag::RETHROW_INTERNAL_EXCEPTIONS;
         $code |= ($debug['RETHROW_UNSAFE_EXCEPTIONS'] ?? 0) * DebugFlag::RETHROW_UNSAFE_EXCEPTIONS;
-        
+
         return $code;
     }
 }

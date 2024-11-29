@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TheCodingMachine\GraphQLite\Bundle\Tests;
 
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
@@ -11,8 +13,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 use TheCodingMachine\GraphQLite\Bundle\GraphQLiteBundle;
 use Symfony\Component\Security\Core\User\InMemoryUser;
-use function class_exists;
-use function serialize;
 
 class GraphQLiteTestingKernel extends Kernel implements CompilerPassInterface
 {
@@ -20,55 +20,25 @@ class GraphQLiteTestingKernel extends Kernel implements CompilerPassInterface
 
     public const CONFIG_EXTS = '.{php,xml,yaml,yml}';
 
-    private bool $enableSession;
-
-    private ?string $enableLogin;
-
-    private bool $enableSecurity;
-
-    private ?string $enableMe;
-
-    private bool $introspection;
-
-    private ?int $maximumQueryComplexity;
-
-    private ?int $maximumQueryDepth;
-    
-    /**
-     * @var string[]
-     */
-    private array $controllersNamespace;
-    
-    /**
-     * @var string[]
-     */
-    private array $typesNamespace;
-
     /**
      * @param string[] $controllersNamespace
      * @param string[] $typesNamespace
      */
-    public function __construct(bool $enableSession = true,
-                                ?string $enableLogin = null,
-                                bool $enableSecurity = true,
-                                ?string $enableMe = null,
-                                bool $introspection = true,
-                                ?int $maximumQueryComplexity = null,
-                                ?int $maximumQueryDepth = null,
-                                array $controllersNamespace = ['TheCodingMachine\\GraphQLite\\Bundle\\Tests\\Fixtures\\Controller\\'],
-                                array $typesNamespace = ['TheCodingMachine\\GraphQLite\\Bundle\\Tests\\Fixtures\\Types\\', 'TheCodingMachine\\GraphQLite\\Bundle\\Tests\\Fixtures\\Entities\\'])
-    {
+    public function __construct(
+        private readonly bool $enableSession = true,
+        private readonly ?string $enableLogin = null,
+        private readonly bool $enableSecurity = true,
+        private readonly ?string $enableMe = null,
+        private readonly bool $introspection = true,
+        private readonly ?int $maximumQueryComplexity = null,
+        private readonly ?int $maximumQueryDepth = null,
+        private readonly array $controllersNamespace = ['TheCodingMachine\\GraphQLite\\Bundle\\Tests\\Fixtures\\Controller\\'],
+        private readonly array $typesNamespace = [
+            'TheCodingMachine\\GraphQLite\\Bundle\\Tests\\Fixtures\\Types\\',
+            'TheCodingMachine\\GraphQLite\\Bundle\\Tests\\Fixtures\\Entities\\'
+        ]
+    ) {
         parent::__construct('test', true);
-        
-        $this->enableSession = $enableSession;
-        $this->enableLogin = $enableLogin;
-        $this->enableSecurity = $enableSecurity;
-        $this->enableMe = $enableMe;
-        $this->introspection = $introspection;
-        $this->maximumQueryComplexity = $maximumQueryComplexity;
-        $this->maximumQueryDepth = $maximumQueryDepth;
-        $this->controllersNamespace = $controllersNamespace;
-        $this->typesNamespace = $typesNamespace;
     }
 
     public function registerBundles(): iterable
@@ -84,7 +54,7 @@ class GraphQLiteTestingKernel extends Kernel implements CompilerPassInterface
         return $bundles;
     }
 
-    public function configureContainer(ContainerBuilder $c, LoaderInterface $loader): void
+    public function configureContainer(ContainerBuilder $container, LoaderInterface $loader): void
     {
         $loader->load(function(ContainerBuilder $container) {
             $frameworkConf = array(

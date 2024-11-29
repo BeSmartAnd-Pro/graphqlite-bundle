@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TheCodingMachine\GraphQLite\Bundle\Mappers;
 
 use phpDocumentor\Reflection\DocBlock;

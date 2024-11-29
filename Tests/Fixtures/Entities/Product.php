@@ -1,17 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TheCodingMachine\GraphQLite\Bundle\Tests\Fixtures\Entities;
 
 class Product
 {
-    private string $name;
-    
-    private float $price;
-
-    public function __construct(string $name, float $price)
+    public function __construct(private readonly string $name, private readonly float $price)
     {
-        $this->name = $name;
-        $this->price = $price;
     }
     
     public function getName(): string

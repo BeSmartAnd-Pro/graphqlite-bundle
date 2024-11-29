@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TheCodingMachine\GraphQLite\Bundle\Tests;
 
-use function json_decode;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use TheCodingMachine\GraphQLite\Schema;
@@ -30,7 +31,7 @@ class NoSecurityBundleTest extends TestCase
 
         $response = $kernel->handle($request);
 
-        $result = json_decode($response->getContent(), true);
+        $result = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         $this->assertSame([
             'data' => [

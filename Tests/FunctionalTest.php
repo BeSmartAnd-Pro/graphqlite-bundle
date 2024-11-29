@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TheCodingMachine\GraphQLite\Bundle\Tests;
 
 use Symfony\Component\Security\Core\User\InMemoryUser;
-use function json_decode;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -46,7 +47,7 @@ class FunctionalTest extends TestCase
 
         $response = $kernel->handle($request);
 
-        $result = json_decode($response->getContent(), true);
+        $result = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         $this->assertSame([
             'data' => [
@@ -86,7 +87,7 @@ class FunctionalTest extends TestCase
         }']);
 
         $response = $kernel->handle($request);
-        $result   = json_decode($response->getContent(), true);
+        $result   = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         $this->assertSame([
             'data' => [
@@ -148,7 +149,8 @@ class FunctionalTest extends TestCase
 
         $this->assertSame(404, $response->getStatusCode());
 
-        $result = json_decode($response->getContent(), true);
+        /** @var array $result */
+        $result = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         $this->assertSame('foo', $result['errors'][0]['message']);
         $this->assertSame('bar', $result['errors'][1]['message']);
@@ -168,7 +170,7 @@ class FunctionalTest extends TestCase
 
         $response = $kernel->handle($request);
 
-        $result = json_decode($response->getContent(), true);
+        $result = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         $this->assertSame([
             'data' => [
@@ -195,7 +197,7 @@ class FunctionalTest extends TestCase
         $response = $kernel->getContainer()->get(GraphQLiteController::class)->handleRequest($request);
 
 
-        $result = json_decode($response->getContent(), true);
+        $result = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         $this->assertSame([
             'data' => [
@@ -219,7 +221,7 @@ class FunctionalTest extends TestCase
 
         $response = $kernel->handle($request);
 
-        $result = json_decode($response->getContent(), true);
+        $result = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         $this->assertSame([
             'data' => [
@@ -250,7 +252,7 @@ class FunctionalTest extends TestCase
 
         $response = $kernel->handle($request);
 
-        $result = json_decode($response->getContent(), true);
+        $result = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         $this->assertSame([
             'data' => [
@@ -286,7 +288,7 @@ class FunctionalTest extends TestCase
 
         $response = $kernel->handle($request);
 
-        $result = json_decode($response->getContent(), true);
+        $result = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         $this->assertSame([
             'data' => [
@@ -322,7 +324,7 @@ class FunctionalTest extends TestCase
 
         $response = $kernel->handle($request);
 
-        $result = json_decode($response->getContent(), true);
+        $result = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         $this->assertSame([
             'data' => [
@@ -349,7 +351,7 @@ class FunctionalTest extends TestCase
 
         $response = $kernel->handle($request);
 
-        $result = json_decode($response->getContent(), true);
+        $result = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         $this->assertArrayHasKey('errors', $result);
         $this->assertSame('Cannot query field "login" on type "Mutation".', $result['errors'][0]['message']);
@@ -401,7 +403,7 @@ class FunctionalTest extends TestCase
 
         $response = $kernel->handle($request);
 
-        $result = json_decode($response->getContent(), true);
+        $result = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         $this->assertSame('Cannot query field "me" on type "Query".', $result['errors'][0]['message']);
     }
@@ -425,7 +427,7 @@ class FunctionalTest extends TestCase
 
         $response = $kernel->handle($request);
 
-        $result = json_decode($response->getContent(), true);
+        $result = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $errors = $result['errors'];
 
         $this->assertSame('This value is not a valid email address.', $errors[0]['message']);
@@ -477,7 +479,7 @@ class FunctionalTest extends TestCase
 
         $response = $kernel->handle($request);
 
-        $result = json_decode($response->getContent(), true);
+        $result = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $errors = $result['errors'];
 
         $this->assertSame('GraphQL introspection is not allowed, but the query contained __schema or __type', $errors[0]['message']);
@@ -505,7 +507,7 @@ class FunctionalTest extends TestCase
 
         $response = $kernel->handle($request);
 
-        $result = json_decode($response->getContent(), true);
+        $result = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $errors = $result['errors'];
 
         $this->assertSame('Max query complexity should be 2 but got 5.', $errors[0]['message']);
@@ -539,7 +541,7 @@ class FunctionalTest extends TestCase
 
         $response = $kernel->handle($request);
 
-        $result = json_decode($response->getContent(), true);
+        $result = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $errors = $result['errors'];
 
         $this->assertSame('Max query depth should be 1 but got 3.', $errors[0]['message']);
@@ -565,7 +567,7 @@ class FunctionalTest extends TestCase
 
         $response = $kernel->handle($request);
 
-        $result = json_decode($response->getContent(), true);
+        $result = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         $this->assertSame([
             'data' => [
