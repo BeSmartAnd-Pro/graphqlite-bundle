@@ -20,6 +20,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use TheCodingMachine\GraphQLite\Bundle\Manager\SchemaManager;
 use TheCodingMachine\GraphQLite\Bundle\Manager\ServerConfigManager;
 use TheCodingMachine\GraphQLite\Mappers\StaticClassListTypeMapperFactory;
+use TheCodingMachine\GraphQLite\Security\AuthorizationServiceInterface;
 use Webmozart\Assert\Assert;
 use Doctrine\Common\Annotations\AnnotationReader as DoctrineAnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
@@ -50,6 +51,7 @@ use TheCodingMachine\GraphQLite\GraphQLRuntimeException as GraphQLException;
 use TheCodingMachine\GraphQLite\Mappers\StaticTypeMapper;
 use TheCodingMachine\GraphQLite\SchemaFactory;
 use TheCodingMachine\GraphQLite\Bundle\Types\SymfonyUserInterfaceType;
+use TheCodingMachine\GraphQLite\Security\AuthenticationServiceInterface;
 
 /**
  * Detects controllers and types automatically and tag them.
@@ -108,6 +110,9 @@ class GraphQLiteCompilerPass implements CompilerPassInterface
             $schemaFactoryX
                 ->addArgument(new Reference('graphqlite.psr16cache'))
                 ->addArgument(new Reference('service_container'));
+            
+            $schemaFactoryX->addMethodCall('setAuthenticationService', [new Reference(AuthenticationServiceInterface::class)]);
+            $schemaFactoryX->addMethodCall('setAuthorizationService', [new Reference(AuthorizationServiceInterface::class)]);
 
             if ($env === 'prod') {
                 $schemaFactoryX->addMethodCall('prodMode');
