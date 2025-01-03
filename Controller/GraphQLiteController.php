@@ -71,7 +71,7 @@ class GraphQLiteController
         return $routes;
     }
 
-    public function handleRequest(string $namespace = 'default', Request $request): Response
+    public function handleRequest(Request $request, string $namespace = 'default'): Response
     {
         $psr7Request = $this->httpMessageFactory->createRequest($request);
 
