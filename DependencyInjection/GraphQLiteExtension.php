@@ -8,7 +8,6 @@ use Exception;
 use GraphQL\Error\DebugFlag;
 use TheCodingMachine\GraphQLite\Bundle\Manager\ServerConfigManager;
 use TheCodingMachine\GraphQLite\Mappers\Root\RootTypeMapperFactoryInterface;
-use GraphQL\Server\ServerConfig;
 use GraphQL\Type\Definition\ObjectType;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -32,11 +31,9 @@ class GraphQLiteExtension extends Extension
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/container'));
-
         $controllers = [];
-        $types;
+        $types       = [];
 
         if (isset($config['namespaces'])) {
             foreach ($config['namespaces'] as $name => $namespace) {
