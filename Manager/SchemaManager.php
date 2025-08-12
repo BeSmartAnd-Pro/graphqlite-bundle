@@ -17,7 +17,7 @@ class SchemaManager
         $this->schemaFactories[] = $schemaFactory;
     }
 
-    /** @param <string, SchemaFactory> $factories */
+    /** @param array<string, SchemaFactory> $factories */
     public function setFactories(array $factories): void
     {
         $this->schemaFactories = $factories;

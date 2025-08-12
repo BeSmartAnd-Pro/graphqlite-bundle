@@ -22,6 +22,7 @@
   ],
   "homepage": "https://github.com/BeSmartAnd-Pro/graphqlite",
   "require": {
+    "besmartand-pro/graphqlite-symfony-validator-bridge": "^1.0",
     "php": ">=8.1",
     "ext-json": "*",
     "laminas/laminas-diactoros": "^3",
@@ -32,8 +33,7 @@
     "symfony/translation": "^7",
     "symfony/validator": "^7",
     "thecodingmachine/cache-utils": "^1",
-    "thecodingmachine/graphqlite": "^7.0",
-    "thecodingmachine/graphqlite-symfony-validator-bridge": "^7.0"
+    "thecodingmachine/graphqlite": "^8.0"
   },
   "require-dev": {
     "beberlei/porpaginas": "^1.2 || ^2.0",

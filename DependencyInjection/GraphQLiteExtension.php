@@ -31,7 +31,7 @@ class GraphQLiteExtension extends Extension
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/container'));
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config/container'));
         $controllers = [];
         $types       = [];
 
@@ -43,7 +43,7 @@ class GraphQLiteExtension extends Extension
                 }
 
                 foreach ($namespace['controllers'] as $controller) {
-                    $controllers[$name][] = rtrim($controller, '\\'); //$controller;
+                    $controllers[$name][] = rtrim($controller, '\\');
                 }
 
                 foreach ($namespace['types'] as $type) {

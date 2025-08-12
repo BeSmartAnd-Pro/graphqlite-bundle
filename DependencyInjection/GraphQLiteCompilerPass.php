@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace TheCodingMachine\GraphQLite\Bundle\DependencyInjection;
 
-use Doctrine\Common\Annotations\PsrCachedReader;
 use Generator;
-use GraphQL\Server\ServerConfig;
 use GraphQL\Validator\Rules\DisableIntrospection;
 use GraphQL\Validator\Rules\QueryComplexity;
 use GraphQL\Validator\Rules\QueryDepth;
@@ -22,8 +20,6 @@ use TheCodingMachine\GraphQLite\Bundle\Manager\ServerConfigManager;
 use TheCodingMachine\GraphQLite\Mappers\StaticClassListTypeMapperFactory;
 use TheCodingMachine\GraphQLite\Security\AuthorizationServiceInterface;
 use Webmozart\Assert\Assert;
-use Doctrine\Common\Annotations\AnnotationReader as DoctrineAnnotationReader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use Psr\SimpleCache\CacheInterface;
 use ReflectionParameter;
 use ReflectionClass;
@@ -280,8 +276,8 @@ class GraphQLiteCompilerPass implements CompilerPassInterface
             }
         }
 
-        foreach ($controllersNamespaces as $namespaceName => $controllersNamespaces) {
-            foreach ($controllersNamespaces as $controllersNamespace) {
+        foreach ($controllersNamespaces as $namespaceName => $subControllersNamespaces) {
+            foreach ($subControllersNamespaces as $controllersNamespace) {
                 $schemaFactories[$namespaceName]->addMethodCall('addControllerNamespace', [ $controllersNamespace ]);
 
                 foreach ($this->getClassList($controllersNamespace) as $refClass) {
@@ -484,24 +480,10 @@ class GraphQLiteCompilerPass implements CompilerPassInterface
 
         return $parameters;
     }
-
-    /**
-     * Returns a cached Doctrine annotation reader.
-     * Note: we cannot get the annotation reader service in the container as we are in a compiler pass.
-     */
+    
     private function getAnnotationReader(): AnnotationReader
     {
-        if ($this->annotationReader === null) {
-            $doctrineAnnotationReader = new DoctrineAnnotationReader();
-
-            if (ApcuAdapter::isSupported()) {
-                $doctrineAnnotationReader = new PsrCachedReader($doctrineAnnotationReader, new ApcuAdapter('graphqlite'), true);
-            }
-
-            $this->annotationReader = new AnnotationReader($doctrineAnnotationReader, AnnotationReader::LAX_MODE);
-        }
-
-        return $this->annotationReader;
+        return $this->annotationReader ??= new AnnotationReader();
     }
 
     private function getPsr16Cache(): CacheInterface

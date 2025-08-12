@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace TheCodingMachine\GraphQLite\Bundle\Manager;
 
 use TheCodingMachine\GraphQLite\Bundle\Server\ServerConfig;
-use TheCodingMachine\GraphQLite\Schema;
-use TheCodingMachine\GraphQLite\SchemaFactory;
 
 class ServerConfigManager
 {
-    /** @var ServerConfig[] $serverConfigs */
+    /** @var array<string, ServerConfig> $serverConfigs */
     protected array $serverConfigs = [];
 
     protected ?int $debugFlag = null;
@@ -22,10 +20,10 @@ class ServerConfigManager
 
     public function addConfig(string $namespace, ServerConfig $serverConfig): void
     {
-        $this->serverConfigs[] = $serverConfig;
+        $this->serverConfigs[$namespace] = $serverConfig;
     }
 
-    /** @param <string, ServerConfig> $configs */
+    /** @param array<string, ServerConfig> $configs */
     public function setConfigs(array $configs): void
     {
         $this->serverConfigs = $configs;

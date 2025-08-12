@@ -23,9 +23,7 @@
         <service id="TheCodingMachine\GraphQLite\Bundle\Manager\SchemaManager"/>
         <service id="TheCodingMachine\GraphQLite\Bundle\Manager\ServerConfigManager"/>
 
-        <service id="TheCodingMachine\GraphQLite\AnnotationReader">
-            <argument key="$mode">%graphqlite.annotations.error_mode%</argument>
-        </service>
+        <service id="TheCodingMachine\GraphQLite\AnnotationReader"/>
 
         <service id="TheCodingMachine\GraphQLite\Bundle\Security\AuthenticationService">
             <argument type="service" id="security.token_storage" on-invalid="null" />
@@ -38,7 +36,7 @@
         </service>
 
         <service id="TheCodingMachine\GraphQLite\Security\AuthorizationServiceInterface" alias="TheCodingMachine\GraphQLite\Bundle\Security\AuthorizationService" />
-        
+
         <service id="GraphQL\Validator\Rules\DisableIntrospection">
             <argument key="$enabled">%graphqlite.security.disableIntrospection%</argument>
         </service>

@@ -14,7 +14,6 @@ use TheCodingMachine\GraphQLite\Bundle\Manager\ServerConfigManager;
 use TheCodingMachine\GraphQLite\Http\HttpCodeDecider;
 use TheCodingMachine\GraphQLite\Http\HttpCodeDeciderInterface;
 use GraphQL\Executor\ExecutionResult;
-use GraphQL\Server\ServerConfig;
 use GraphQL\Server\StandardServer;
 use GraphQL\Upload\UploadMiddleware;
 use Psr\Http\Message\ServerRequestInterface;
@@ -46,7 +45,7 @@ class GraphQLiteController
         ?HttpCodeDeciderInterface $httpCodeDecider = null
     ) {
         $this->httpMessageFactory = $httpMessageFactory ?: new PsrHttpFactory(new ServerRequestFactory(), new StreamFactory(), new UploadedFileFactory(), new ResponseFactory());
-        $this->debug = $debug ?? $this->serverConfigManager->getDebugFlag();
+        $this->debug = $debug ?? $this->serverConfigManager->getDebugFlag() ?? 0;
         $this->httpCodeDecider = $httpCodeDecider ?? new HttpCodeDecider();
     }
 
