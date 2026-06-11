@@ -27,10 +27,11 @@ class Contact
     }
 
     #[Field]
-    #[Autowire(['for' => '$testService', 'identifier' => 'someService'])]
-    #[Autowire(['for' => '$someService', 'identifier' => 'someService'])]
-    #[Autowire(['for' => '$someAlias', 'identifier' => 'someAlias'])]
-    public function injectService(?TestGraphqlController $testService = null, ?stdClass $someService = null, ?stdClass $someAlias = null): string
+    public function injectService(
+        #[Autowire] ?TestGraphqlController $testService = null,
+        #[Autowire('someService')] ?stdClass $someService = null,
+        #[Autowire('someAlias')] ?stdClass $someAlias = null
+    ): string
     {
         if (!$testService instanceof TestGraphqlController || $someService === null || $someAlias === null) {
             return 'KO';
@@ -39,13 +40,12 @@ class Contact
     }
 
     #[Field(prefetchMethod: 'prefetchData')]
-    public function injectServicePrefetch($prefetchData): string
+    public function injectServicePrefetch(mixed $prefetchData): string
     {
         return $prefetchData;
     }
 
-    #[Autowire(['for' => '$someOtherService', 'identifier' => 'someOtherService'])]
-    public function prefetchData(iterable $iterable, ?stdClass $someOtherService = null): string
+    public function prefetchData(iterable $iterable, #[Autowire('someOtherService')] ?stdClass $someOtherService = null): string
     {
         if ($someOtherService === null) {
             return 'KO';

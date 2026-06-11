@@ -12,7 +12,7 @@ use GraphQL\Type\Definition\ObjectType;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class GraphQLiteExtension extends Extension
 {
@@ -31,7 +31,7 @@ class GraphQLiteExtension extends Extension
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config/container'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config/container'));
         $controllers = [];
         $types       = [];
 
@@ -64,7 +64,7 @@ class GraphQLiteExtension extends Extension
         $container->setParameter('graphqlite.security.maximum_query_depth', $config['security']['maximum_query_depth'] ?? null);
         $container->setParameter('graphqlite.security.firewall_name', $config['security']['firewall_name'] ?? 'main');
 
-        $loader->load('graphqlite.xml');
+        $loader->load('graphqlite.php');
 
         $definition = $container->getDefinition(ServerConfigManager::class);
 

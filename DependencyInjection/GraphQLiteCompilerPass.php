@@ -24,6 +24,7 @@ use Psr\SimpleCache\CacheInterface;
 use ReflectionParameter;
 use ReflectionClass;
 use ReflectionMethod;
+use ReflectionAttribute;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -77,7 +78,7 @@ class GraphQLiteCompilerPass implements CompilerPassInterface
         $controllersNamespaces = $container->getParameter('graphqlite.namespaces.controllers');
         $typesNamespaces = $container->getParameter('graphqlite.namespaces.types');
 
-        assert(is_iterable($controllersNamespaces));
+        assert(is_array($controllersNamespaces));
 
         foreach ($controllersNamespaces as $controllersNamespace) {
             assert(is_iterable($controllersNamespace));
@@ -387,7 +388,7 @@ class GraphQLiteCompilerPass implements CompilerPassInterface
             $services = [];
 
             foreach ($refClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-                $field = $reader->getRequestAnnotation($method, Field::class) ?? $reader->getRequestAnnotation($method, Query::class) ?? $reader->getRequestAnnotation($method, Mutation::class);
+                $field = $reader->getGraphQLElementAnnotation($method, Field::class) ?? $reader->getGraphQLElementAnnotation($method, Query::class) ?? $reader->getGraphQLElementAnnotation($method, Mutation::class);
 
                 if ($field !== null) {
                     if ($isController) {
@@ -429,29 +430,19 @@ class GraphQLiteCompilerPass implements CompilerPassInterface
     {
         $services = [];
 
-        /**
-         * @var Autowire[] $autowireAnnotations
-         */
-        $autowireAnnotations = $this->getAnnotationReader()->getMethodAnnotations($method, Autowire::class);
-        $parametersByName    = null;
+        foreach ($method->getParameters() as $parameter) {
+            foreach ($parameter->getAttributes(Autowire::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+                $autowire = $attribute->newInstance();
+                assert($autowire instanceof Autowire);
 
-        foreach ($autowireAnnotations as $autowire) {
-            $target = $autowire->getTarget();
+                $id = $autowire->getIdentifier();
 
-            if ($parametersByName === null) {
-                $parametersByName = self::getParametersByName($method);
-            }
+                if ($id !== null) {
+                    $services[$id] = $id;
 
-            if (!isset($parametersByName[$target])) {
-                throw new GraphQLException('In method '.$method->getDeclaringClass()->getName().'::'.$method->getName().', the #Autowire attribute refers to a non existing parameter named "'.$target.'"');
-            }
+                    continue;
+                }
 
-            $id = $autowire->getIdentifier();
-
-            if ($id !== null) {
-                $services[$id] = $id;
-            } else {
-                $parameter = $parametersByName[$target];
                 $type = $parameter->getType();
 
                 if ($type instanceof ReflectionNamedType) {
@@ -465,20 +456,6 @@ class GraphQLiteCompilerPass implements CompilerPassInterface
         }
 
         return $services;
-    }
-
-    /**
-     * @return array<string, ReflectionParameter>
-     */
-    private static function getParametersByName(ReflectionMethod $method): array
-    {
-        $parameters = [];
-
-        foreach ($method->getParameters() as $parameter) {
-            $parameters[$parameter->getName()] = $parameter;
-        }
-
-        return $parameters;
     }
     
     private function getAnnotationReader(): AnnotationReader

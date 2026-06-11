@@ -27,11 +27,11 @@
     "ext-json": "*",
     "laminas/laminas-diactoros": "^3",
     "nyholm/psr7": "^1.1",
-    "symfony/console": "^7",
-    "symfony/framework-bundle": "^7",
-    "symfony/psr-http-message-bridge": "^7",
-    "symfony/translation": "^7",
-    "symfony/validator": "^7",
+    "symfony/console": "^7|^8",
+    "symfony/framework-bundle": "^7|^8",
+    "symfony/psr-http-message-bridge": "^7|^8",
+    "symfony/translation": "^7|^8",
+    "symfony/validator": "^7|^8",
     "thecodingmachine/cache-utils": "^1",
     "thecodingmachine/graphqlite": "^8.0"
   },
@@ -43,9 +43,9 @@
     "phpstan/phpstan": "^1.8",
     "phpunit/phpunit": "^8.5.19 || ^9.5.8",
     "roave/security-advisories": "dev-latest",
-    "symfony/phpunit-bridge": "^7",
-    "symfony/security-bundle": "^7",
-    "symfony/yaml": "^7"
+    "symfony/phpunit-bridge": "^7|^8",
+    "symfony/security-bundle": "^7|^8",
+    "symfony/yaml": "^7|^8"
   },
   "conflict": {
     "mouf/classname-mapper": "<1.0.2",
@@ -61,6 +61,11 @@
   "autoload": {
     "psr-4": {
       "TheCodingMachine\\GraphQLite\\Bundle\\": ""
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "TheCodingMachine\\GraphQLite\\Bundle\\Tests\\": "tests/"
     }
   },
   "config": {

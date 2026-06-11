@@ -45,7 +45,7 @@ class GraphQLiteTestingKernel extends Kernel implements CompilerPassInterface
     {
         $bundles = [ new FrameworkBundle() ];
         
-        if (class_exists(SecurityBundle::class)) {
+        if ($this->enableSecurity && class_exists(SecurityBundle::class)) {
             $bundles[] = new SecurityBundle();
         }
         
@@ -79,7 +79,6 @@ class GraphQLiteTestingKernel extends Kernel implements CompilerPassInterface
             $container->loadFromExtension('framework', $frameworkConf);
             if ($this->enableSecurity) {
                 $container->loadFromExtension('security', array(
-                    'enable_authenticator_manager' => true,
                     'providers' => [
                         'in_memory' => [
                             'memory' => [
@@ -114,9 +113,11 @@ class GraphQLiteTestingKernel extends Kernel implements CompilerPassInterface
             }
 
             $graphqliteConf = array(
-                'namespace' => [
+                'namespaces' => [
+                    'default' => [
                     'controllers' => $this->controllersNamespace,
                     'types' => $this->typesNamespace
+                    ],
                 ],
             );
 
@@ -142,7 +143,7 @@ class GraphQLiteTestingKernel extends Kernel implements CompilerPassInterface
 
             $container->loadFromExtension('graphqlite', $graphqliteConf);
         });
-        $confDir = $this->getProjectDir().'/Tests/Fixtures/config';
+        $confDir = $this->getProjectDir().'/tests/Fixtures/config';
 
         $loader->load($confDir.'/{packages}/*'.self::CONFIG_EXTS, 'glob');
         $loader->load($confDir.'/{packages}/'.$this->environment.'/**/*'.self::CONFIG_EXTS, 'glob');
@@ -153,7 +154,7 @@ class GraphQLiteTestingKernel extends Kernel implements CompilerPassInterface
     // Note: typing is disabled because using different classes in Symfony 4 and 5
     protected function configureRoutes(/*RoutingConfigurator*/ $routes): void
     {
-        $routes->import(__DIR__.'/../Resources/config/routes.xml');
+        $routes->import(__DIR__.'/../Resources/config/routes.php');
     }
 
     public function getCacheDir(): string

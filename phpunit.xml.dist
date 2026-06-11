@@ -17,7 +17,7 @@
 
     <testsuites>
         <testsuite name="Graphql controllers bundle Test Suite">
-            <directory>./Tests/</directory>
+            <directory>./tests/</directory>
         </testsuite>
     </testsuites>
 
@@ -29,7 +29,7 @@
                 <directory>cache</directory>
                 <directory>build</directory>
                 <directory>./Resources</directory>
-                <directory>./Tests</directory>
+                <directory>./tests</directory>
                 <directory>./vendor</directory>
                 <directory>./var</directory>
             </exclude>

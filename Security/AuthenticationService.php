@@ -35,7 +35,8 @@ class AuthenticationService implements AuthenticationServiceInterface
             throw new LogicException('The SecurityBundle is not registered in your application. Try running "composer require symfony/security-bundle".');
         }
 
-        $token = $this->tokenStorage->getToken();
+        $tokenStorage = $this->tokenStorage;
+        $token = $tokenStorage->getToken();
         
         if (null === $token) {
             return null;

@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-// The namespace for this class is broken. It must not impact Symfony.
+namespace TheCodingMachine\GraphQLite\Bundle\Tests\Fixtures\Entities;
+
 class BadClass
 {
 
